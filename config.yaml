@@ -1,0 +1,33 @@
+# Settings for clv_model.py. Every value here can be changed; paths are relative to this file.
+
+input: data/transactions.csv        # .csv or .xlsx, one row per order
+
+columns:                            # the column names in YOUR file
+  customer_id: customer_id
+  order_date: order_date
+  order_value: order_value
+  order_id: order_id                # optional; set to null if the file has no order id
+
+date_format: null                   # e.g. "%d-%m-%Y"; null lets pandas work it out
+day_first: false                    # true if dates look like 31/12/2025 and date_format is null
+
+horizon_months: 12                  # how far ahead to predict; also the length of the holdout window
+snapshot_step_months: 3             # the model learns from several past cut-off dates, this far apart
+min_history_months: 6               # the earliest cut-off must have at least this much history behind it
+
+heuristic:
+  half_life_gaps: 2.0               # chance of still being active halves every 2 "usual gaps" of silence
+  min_tenure_days: 180              # a customer known for 3 weeks is not assumed to keep ordering at that pace
+
+tiers:                              # share of customers in each tier, best first (must add up to 100)
+  Platinum: 5
+  Gold: 15
+  Silver: 30
+  Bronze: 50
+
+# Rule of thumb for the most that is worth spending on one customer:
+#   predicted value x gross_margin x payback_months / horizon_months
+gross_margin: 0.35                  # share of an order's value that is left after cost of goods
+payback_months: 6                   # the spend must be earned back from margin within this many months
+
+random_seed: 7
